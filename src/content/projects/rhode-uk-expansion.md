@@ -30,8 +30,6 @@ inlineImages:
     after: "audience"
 ---
 
-> Draft from the source deck — edit in your own voice.
-
 ## The brief
 I had to design a market entry strategy for an existing prestige beauty brand entering a new region. I chose **rhode** (Hailey Bieber's barrier-focused skincare line) and **the UK** — a £2.72B skincare market where 24.6% of the category is prestige and 68% of consumers rely on online reviews before buying.
 

@@ -22,8 +22,6 @@ inlineImages:
     after: "funnel"
 ---
 
-> Draft from the source deck — edit in your own voice.
-
 ## The brief
 Take an existing prestige beauty product and build an integrated marketing campaign that grows the audience without losing the brand's existing one. I picked **REFY Beauty's Brow Sculpt** — the wax-gel hybrid that gives a sculpted, laminated brow with all-day hold — and asked: who else needs this besides REFY's current "clean girl" customer?
 

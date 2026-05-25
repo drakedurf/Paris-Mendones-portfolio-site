@@ -30,8 +30,6 @@ gallery:
     src: "/projects/beyond-rare/bathroom-mockup.png"
 ---
 
-> Draft from the source deck — edit in your own voice.
-
 ## The brief
 Design a new beauty product under an existing parent brand — full concept, brand alignment, persona, packaging, and final deliverables (primary white silhouette, secondary white model, full-color comp). I designed a fragrance line for **Rare Beauty**, Selena Gomez's clean, cruelty-free cosmetics brand, and named it **Beyond Rare**.
 

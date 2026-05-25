@@ -26,8 +26,6 @@ inlineImages:
     after: "shotlist"
 ---
 
-> Draft from the source deck — edit in your own voice.
-
 ## The brief
 Direct and produce a print campaign from concept through finished advertisement. I led as **Creative Director, Stylist, and Makeup Artist**, working with Leoj Chin on photography and Grace Bringham as the model.
 

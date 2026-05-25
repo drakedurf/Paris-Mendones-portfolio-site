@@ -26,8 +26,6 @@ gallery:
     src: "/projects/airlight-pro/celebrity-grammys.png"
 ---
 
-> Draft from the source report — edit in your own voice. Partner project with Aidyn Lovicz; please confirm credit and any per-person attribution you want surfaced.
-
 ## The brief
 Pick an innovative product launched in the last two years and analyze it — design, functionality, market relevance, competitive positioning, marketing strategy, and future potential. Aidyn and I picked the **L'Oréal Professional AirLight Pro**, launched Spring 2024: the first professional hair dryer augmented with infrared light technology.
 

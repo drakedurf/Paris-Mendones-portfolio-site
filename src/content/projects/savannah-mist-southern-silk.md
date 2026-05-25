@@ -25,8 +25,6 @@ inlineImages:
     after: "whitespace"
 ---
 
-> Draft from the source deck — edit in your own voice.
-
 ## The brief
 Develop a new product line for an existing brand and take it all the way to product turnover — brand context, consumer persona, packaging concepts, formulation, COGS, claims, and testing protocols. I picked **Emily McCarthy**, the Savannah-based boutique known for joyful, color-driven women's fashion, and proposed a personal-care line extension.
 

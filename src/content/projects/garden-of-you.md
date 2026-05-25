@@ -38,8 +38,6 @@ gallery:
     src: "/projects/garden-of-you/window2soul-arms-raised.jpg"
 ---
 
-> Draft from the source deck — edit in your own voice. This was a group project with Sarah Albannai, Shannon Rattray, and Azariah Richards; please confirm credit lines.
-
 ## The brief
 Build a film-led campaign treatment for a real fragrance brand — full pre-production, production, and post-production planning, plus a finished screening. Our group of four picked **Orebella**, Bella Hadid's self-titled "first intentional skin parfum," and built the campaign around its central idea: scent as a portal into another version of yourself.
 
