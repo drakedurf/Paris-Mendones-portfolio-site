@@ -1,0 +1,36 @@
+---
+const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) => {
+  if (href === '/') return pathname === '/';
+  return pathname === href || pathname.startsWith(href + '/');
+};
+
+const nav = [
+  { href: '/projects', label: 'Projects' },
+  { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' },
+];
+---
+
+<header class="sticky top-0 z-40 bg-parchment/85 backdrop-blur-md border-b border-rule/60">
+  <div class="container-wide flex items-center justify-between py-5 md:py-6">
+    <a href="/" class="flex items-center gap-3 group" aria-label="Paris Mendones — home">
+      <img src="/brand/primary-logo.png" alt="Paris Mendones" class="h-10 md:h-12 w-auto" width="711" height="392" />
+    </a>
+
+    <nav aria-label="Primary" class="flex items-center gap-6 md:gap-9">
+      {nav.map((item) => (
+        <a
+          href={item.href}
+          class={`relative text-sm md:text-[15px] tracking-wide transition-colors ${isActive(item.href) ? 'text-ink' : 'text-ink-soft hover:text-ink'}`}
+          aria-current={isActive(item.href) ? 'page' : undefined}
+        >
+          {item.label}
+          {isActive(item.href) && (
+            <span class="absolute -bottom-1 left-0 right-0 h-px bg-blush-deep"></span>
+          )}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>

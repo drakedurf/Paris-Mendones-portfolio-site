@@ -1,0 +1,187 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import Reveal from '../../components/Reveal.astro';
+
+const all = await getCollection('projects');
+const sorted = all.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+
+const classCodes = Array.from(
+  new Set(sorted.map((p) => p.data.classCode))
+).sort();
+
+const disciplineCounts = new Map<string, number>();
+sorted.forEach((p) => {
+  (p.data.disciplines ?? []).forEach((d) => {
+    disciplineCounts.set(d, (disciplineCounts.get(d) ?? 0) + 1);
+  });
+});
+const disciplines = Array.from(disciplineCounts.keys()).sort();
+---
+
+<Base title="Projects" description="Paris Mendones — projects across brand strategy, product development, marketing, and creative direction.">
+  <section class="container-wide pt-12 md:pt-20 pb-12 md:pb-16">
+    <Reveal>
+      <p class="eyebrow">Projects</p>
+    </Reveal>
+    <div class="mt-8 md:mt-12 grid grid-cols-1 md:grid-cols-12 gap-x-10 gap-y-8 items-end">
+      <Reveal class="md:col-span-8" delay={80}>
+        <h1
+          class="font-display tracking-tight"
+          style="font-size: var(--text-display); line-height: var(--text-display-line-height);"
+        >
+          The <span class="italic font-light">work</span>,<br />
+          <span class="text-blush-deep">all of it.</span>
+        </h1>
+      </Reveal>
+      <Reveal class="md:col-span-4" delay={140}>
+        <p class="text-lg text-ink-soft leading-relaxed max-w-[34ch]">
+          {sorted.length} projects across brand strategy, product development, marketing, and creative direction.
+          Filter by class or discipline.
+        </p>
+      </Reveal>
+    </div>
+  </section>
+
+  <section class="container-wide pb-10 md:pb-14">
+    <Reveal>
+      <div class="border-y border-rule/60 py-5 md:py-6 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="eyebrow mr-2">Class</span>
+          <button type="button" class="filter-chip is-active" data-filter-group="class" data-filter-value="all">
+            All
+          </button>
+          {classCodes.map((code) => (
+            <button type="button" class="filter-chip" data-filter-group="class" data-filter-value={code}>
+              {code}
+            </button>
+          ))}
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="eyebrow mr-2">Discipline</span>
+          <button type="button" class="filter-chip is-active" data-filter-group="discipline" data-filter-value="all">
+            All
+          </button>
+          {disciplines.map((d) => (
+            <button type="button" class="filter-chip" data-filter-group="discipline" data-filter-value={d}>
+              {d}
+            </button>
+          ))}
+        </div>
+      </div>
+    </Reveal>
+  </section>
+
+  <section class="container-wide pb-24 md:pb-32">
+    <div
+      id="project-grid"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 md:gap-x-8 gap-y-14 md:gap-y-20"
+    >
+      {sorted.map((project, i) => (
+        <Reveal
+          class="project-tile"
+          delay={(i % 6) * 60}
+          data-class={project.data.classCode}
+          data-disciplines={(project.data.disciplines ?? []).join('|')}
+        >
+          <ProjectCard
+            href={`/projects/${project.id}`}
+            title={project.data.title}
+            summary={project.data.summary}
+            classLabel={project.data.classCode}
+            year={project.data.year}
+            disciplines={project.data.disciplines}
+            hero={project.data.hero}
+            index={i}
+          />
+        </Reveal>
+      ))}
+    </div>
+
+    <p id="empty-state" class="hidden text-center text-ink-mute py-20">
+      No projects match this filter. <button type="button" id="reset-filters" class="underline underline-offset-4 hover:text-ink ml-1">Reset filters</button>.
+    </p>
+  </section>
+
+  <style>
+    .filter-chip {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      padding: 0.4rem 0.9rem;
+      border-radius: 9999px;
+      border: 1px solid var(--color-rule);
+      color: var(--color-ink-soft);
+      background: transparent;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s, background-color 0.2s;
+    }
+    .filter-chip:hover {
+      color: var(--color-ink);
+      border-color: var(--color-ink);
+    }
+    .filter-chip.is-active {
+      background: var(--color-ink);
+      color: var(--color-parchment);
+      border-color: var(--color-ink);
+    }
+    .project-tile[hidden] {
+      display: none;
+    }
+  </style>
+
+  <script>
+    const grid = document.getElementById('project-grid');
+    const tiles = grid ? Array.from(grid.querySelectorAll<HTMLElement>('.project-tile')) : [];
+    const empty = document.getElementById('empty-state');
+    const resetBtn = document.getElementById('reset-filters');
+    const state = { class: 'all', discipline: 'all' };
+
+    const apply = () => {
+      let visible = 0;
+      tiles.forEach((tile) => {
+        const cls = tile.dataset.class ?? '';
+        const disciplines = (tile.dataset.disciplines ?? '').split('|').filter(Boolean);
+        const classMatch = state.class === 'all' || cls === state.class;
+        const discMatch = state.discipline === 'all' || disciplines.includes(state.discipline);
+        const show = classMatch && discMatch;
+        if (show) {
+          tile.removeAttribute('hidden');
+          visible++;
+        } else {
+          tile.setAttribute('hidden', '');
+        }
+      });
+      if (empty) {
+        if (visible === 0) empty.classList.remove('hidden');
+        else empty.classList.add('hidden');
+      }
+    };
+
+    document.querySelectorAll<HTMLButtonElement>('.filter-chip').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const group = btn.dataset.filterGroup as 'class' | 'discipline' | undefined;
+        const value = btn.dataset.filterValue;
+        if (!group || !value) return;
+        state[group] = value;
+        document
+          .querySelectorAll<HTMLButtonElement>(`.filter-chip[data-filter-group="${group}"]`)
+          .forEach((b) => b.classList.toggle('is-active', b === btn));
+        apply();
+      });
+    });
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        state.class = 'all';
+        state.discipline = 'all';
+        document.querySelectorAll<HTMLButtonElement>('.filter-chip').forEach((b) => {
+          const isAll = b.dataset.filterValue === 'all';
+          b.classList.toggle('is-active', isAll);
+        });
+        apply();
+      });
+    }
+  </script>
+</Base>

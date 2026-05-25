@@ -1,0 +1,79 @@
+---
+import '../styles/global.css';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  theme?: 'parchment' | 'ink';
+}
+
+const {
+  title,
+  description = 'Paris Mendones — Business of Beauty & Fragrance portfolio. Brand strategy, product development, and marketing work from SCAD.',
+  theme = 'parchment',
+} = Astro.props;
+
+const fullTitle = title === 'Paris Mendones' ? title : `${title} — Paris Mendones`;
+---
+
+<!doctype html>
+<html lang="en" class={theme === 'ink' ? 'theme-ink' : 'theme-parchment'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/png" href="/brand/primary-logo.png" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#F4EFE6" />
+  </head>
+  <body class="min-h-screen flex flex-col antialiased">
+    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:bg-ink focus:text-parchment focus:px-3 focus:py-2 focus:rounded">Skip to content</a>
+
+    <SiteHeader />
+
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+
+    <SiteFooter />
+
+    <script>
+      import { animate, inView } from 'motion';
+
+      const els = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      els.forEach((el) => {
+        inView(
+          el,
+          () => {
+            el.classList.add('is-visible');
+          },
+          { amount: 0.2 }
+        );
+      });
+
+      const cards = document.querySelectorAll<HTMLElement>('[data-hover-lift]');
+      cards.forEach((card) => {
+        const img = card.querySelector<HTMLElement>('[data-hover-zoom]');
+        card.addEventListener('mouseenter', () => {
+          animate(card, { y: -6 }, { duration: 0.45, easing: [0.2, 0.65, 0.2, 1] });
+          if (img) animate(img, { scale: 1.04 }, { duration: 0.9, easing: [0.2, 0.65, 0.2, 1] });
+        });
+        card.addEventListener('mouseleave', () => {
+          animate(card, { y: 0 }, { duration: 0.45, easing: [0.2, 0.65, 0.2, 1] });
+          if (img) animate(img, { scale: 1 }, { duration: 0.9, easing: [0.2, 0.65, 0.2, 1] });
+        });
+      });
+
+      const main = document.getElementById('main');
+      if (main) {
+        animate(main, { opacity: [0, 1], y: [12, 0] }, { duration: 0.7, easing: [0.2, 0.65, 0.2, 1] });
+      }
+    </script>
+  </body>
+</html>

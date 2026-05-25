@@ -1,0 +1,54 @@
+---
+import ImagePlaceholder from './ImagePlaceholder.astro';
+
+interface Props {
+  href: string;
+  title: string;
+  summary: string;
+  classLabel: string;
+  year?: string;
+  disciplines?: string[];
+  hero?: { label: string; aspectRatio?: string; src?: string };
+  size?: 'lg' | 'md';
+  index?: number;
+}
+
+const {
+  href,
+  title,
+  classLabel,
+  hero,
+  size = 'md',
+  index = 0,
+} = Astro.props;
+
+const heroLabel = hero?.label ?? `${title} — hero image`;
+const heroRatio = hero?.aspectRatio ?? (size === 'lg' ? '4/3' : '4/5');
+const heroSrc = hero?.src;
+const num = String(index + 1).padStart(2, '0');
+---
+
+<a
+  href={href}
+  data-hover-lift
+  class="group block focus:outline-none"
+  aria-label={`${title} — view project`}
+>
+  <article class="will-change-transform">
+    <div class="overflow-hidden rounded-2xl">
+      <div data-hover-zoom class="will-change-transform">
+        <ImagePlaceholder label={heroLabel} aspectRatio={heroRatio} src={heroSrc} tone="warm" />
+      </div>
+    </div>
+
+    <div class="mt-5 md:mt-6 flex items-baseline gap-3">
+      <span class="font-display text-xs text-blush-deep tabular-nums shrink-0">{num}</span>
+      <span class="eyebrow !text-[10px] shrink-0">{classLabel}</span>
+    </div>
+
+    <h3 class={`font-display mt-2 ${size === 'lg' ? 'text-4xl md:text-5xl' : 'text-2xl md:text-[28px]'} leading-[1.05] tracking-tight`}>
+      {title}
+      <span aria-hidden="true" class="inline-block transition-transform group-hover:translate-x-1 ml-1 text-blush-deep">→</span>
+    </h3>
+  </article>
+</a>

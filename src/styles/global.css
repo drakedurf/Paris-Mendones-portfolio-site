@@ -1,0 +1,125 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@import "@fontsource/fraunces/400.css";
+@import "@fontsource/fraunces/500.css";
+@import "@fontsource/fraunces/600.css";
+@import "@fontsource/fraunces/700.css";
+@import "@fontsource/fraunces/900.css";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+
+@theme {
+  --color-parchment: #F4EFE6;
+  --color-parchment-deep: #ECE4D4;
+  --color-parchment-warm: #EFE7D6;
+  --color-ink: #1A1614;
+  --color-ink-soft: #3A322D;
+  --color-ink-mute: #6B5F56;
+  --color-blush: #FFBEE1;
+  --color-blush-deep: #BF4F89;
+  --color-taupe: #A89F92;
+  --color-rule: #D8CFC0;
+
+  --font-serif: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+
+  --text-display: clamp(3rem, 8vw, 7.5rem);
+  --text-display-line-height: 0.95;
+  --text-h1: clamp(2.25rem, 5vw, 4.5rem);
+  --text-h1-line-height: 1.02;
+  --text-h2: clamp(1.75rem, 3.5vw, 3rem);
+  --text-h2-line-height: 1.08;
+  --text-eyebrow: 0.75rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-parchment);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-blush);
+    color: var(--color-ink);
+  }
+
+  a {
+    text-underline-offset: 0.25em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-blush-deep);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .font-display {
+    font-family: var(--font-serif);
+    font-optical-sizing: auto;
+    letter-spacing: -0.02em;
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: var(--text-eyebrow);
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-ink-mute);
+  }
+
+  .rule {
+    border-color: var(--color-rule);
+  }
+}
+
+@layer components {
+  .container-wide {
+    width: 100%;
+    max-width: 120rem;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .container-wide {
+      padding-inline: 3rem;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .container-wide {
+      padding-inline: 4rem;
+    }
+  }
+
+  .container-narrow {
+    width: 100%;
+    max-width: 56rem;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .container-narrow {
+      padding-inline: 3rem;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

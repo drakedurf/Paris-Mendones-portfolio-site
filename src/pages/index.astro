@@ -1,0 +1,146 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Reveal from '../components/Reveal.astro';
+import FeaturedCarousel from '../components/FeaturedCarousel.astro';
+
+const all = await getCollection('projects');
+const sorted = all.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+const featured = sorted.filter((p) => p.data.featured).slice(0, 4);
+const featuredFallback = featured.length >= 1 ? featured : sorted.slice(0, 4);
+const restCount = sorted.length;
+---
+
+<Base title="Paris Mendones" description="Paris Mendones — Business of Beauty & Fragrance portfolio. SCAD. Brand strategy, product development, marketing.">
+  <section class="container-wide pt-10 md:pt-16 pb-6 md:pb-10">
+    <Reveal>
+      <p class="eyebrow">Portfolio · 2024–2026</p>
+    </Reveal>
+
+    <div class="mt-6 md:mt-10 grid grid-cols-1 md:grid-cols-12 gap-x-8 md:gap-x-12 gap-y-10 md:gap-y-0 items-start">
+      <div class="md:col-span-8">
+        <Reveal delay={80}>
+          <h1 class="font-display leading-[0.95] tracking-tight text-[3.25rem] sm:text-[4.5rem] md:text-[6rem] lg:text-[7rem] xl:text-[8rem]">
+            I think about<br />
+            beauty <span class="italic font-light">as a</span><br />
+            <span class="text-blush-deep">business.</span>
+          </h1>
+        </Reveal>
+
+        <Reveal delay={160}>
+          <div class="mt-10 md:mt-14 grid grid-cols-1 sm:grid-cols-12 gap-8 items-end">
+            <p class="sm:col-span-7 text-lg md:text-xl text-ink-soft leading-relaxed max-w-[52ch]">
+              I'm Paris Mendones — a Business of Beauty &amp; Fragrance junior at SCAD,
+              working at the intersection of brand strategy, product development, and
+              marketing. This is the work.
+            </p>
+            <div class="sm:col-span-5 flex items-center gap-4 flex-wrap">
+              <a href="/projects" class="inline-flex items-center gap-2 bg-ink text-parchment px-5 py-3 rounded-full text-sm tracking-wide hover:bg-blush hover:text-ink transition-colors">
+                See the work
+                <span aria-hidden="true">→</span>
+              </a>
+              <a href="/about" class="inline-flex items-center gap-2 px-5 py-3 rounded-full text-sm tracking-wide border border-ink/15 hover:border-ink transition-colors">
+                About Paris
+              </a>
+            </div>
+          </div>
+        </Reveal>
+
+        <Reveal delay={240}>
+          <a
+            href="#featured"
+            class="mt-10 md:mt-14 inline-flex items-center gap-3 text-sm text-ink-mute hover:text-ink transition-colors group"
+            aria-label="Scroll to selected projects"
+          >
+            <span class="block h-px w-10 bg-current"></span>
+            <span class="eyebrow !text-current">Selected projects</span>
+            <span aria-hidden="true" class="transition-transform group-hover:translate-y-1">↓</span>
+          </a>
+        </Reveal>
+      </div>
+
+      <Reveal class="md:col-span-4" delay={120}>
+        <figure class="relative">
+          <div class="overflow-hidden rounded-2xl aspect-[4/5]">
+            <img
+              src="/about/portrait.jpg"
+              alt="Paris Mendones"
+              class="h-full w-full object-cover"
+              loading="eager"
+              decoding="async"
+            />
+          </div>
+          <img
+            src="/brand/secondary-logo.png"
+            alt=""
+            aria-hidden="true"
+            class="absolute -bottom-5 -right-3 md:-bottom-6 md:-right-4 h-14 md:h-20 w-auto opacity-95 drop-shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
+            width="584"
+            height="336"
+          />
+        </figure>
+      </Reveal>
+    </div>
+  </section>
+
+  <section id="featured" class="container-wide pt-8 md:pt-12 pb-20 md:pb-32 scroll-mt-24">
+    <Reveal>
+      <div class="flex items-end justify-between gap-6 mb-10 md:mb-14 border-b border-rule/60 pb-6">
+        <div>
+          <p class="eyebrow">Featured</p>
+          <h2 class="font-display mt-3 tracking-tight" style="font-size: var(--text-h2); line-height: var(--text-h2-line-height);">
+            Selected projects
+          </h2>
+        </div>
+        <a href="/projects" class="hidden md:inline-flex items-center gap-2 text-sm text-ink-soft hover:text-ink transition-colors whitespace-nowrap">
+          All {restCount} projects
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </Reveal>
+
+    <Reveal>
+      <FeaturedCarousel
+        intervalMs={5000}
+        slides={featuredFallback.map((project) => ({
+          href: `/projects/${project.id}`,
+          title: project.data.title,
+          summary: project.data.summary,
+          classLabel: project.data.classCode,
+          year: project.data.year,
+          disciplines: project.data.disciplines,
+          hero: project.data.hero,
+        }))}
+      />
+    </Reveal>
+
+    <div class="mt-16 md:hidden">
+      <a href="/projects" class="inline-flex items-center gap-2 text-sm text-ink-soft hover:text-ink">
+        All {restCount} projects <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="bg-ink text-parchment py-24 md:py-36 my-0">
+    <div class="container-wide grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-center">
+      <Reveal class="md:col-span-7">
+        <p class="eyebrow !text-parchment/60">A note</p>
+        <p class="font-display mt-6 leading-[1.05] tracking-tight" style="font-size: var(--text-h1); line-height: var(--text-h1-line-height);">
+          The beauty industry runs on
+          <span class="italic font-light">taste</span> and
+          <span class="text-blush">numbers</span>. I'm trying to be fluent in both.
+        </p>
+      </Reveal>
+      <Reveal class="md:col-span-5" delay={120}>
+        <p class="text-parchment/80 text-lg leading-relaxed max-w-[42ch]">
+          Open to internships, projects, and conversations — at indie houses,
+          legacy brands, and everything in between. Currently a junior at SCAD,
+          finishing senior year next.
+        </p>
+        <a href="/contact" class="mt-8 inline-flex items-center gap-2 border border-parchment/30 hover:border-blush hover:text-blush transition-colors px-5 py-3 rounded-full text-sm tracking-wide">
+          Get in touch <span aria-hidden="true">→</span>
+        </a>
+      </Reveal>
+    </div>
+  </section>
+</Base>

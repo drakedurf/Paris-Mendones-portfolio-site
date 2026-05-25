@@ -1,0 +1,37 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-32 md:mt-40 border-t border-rule/60">
+  <div class="container-wide py-14 md:py-20 grid grid-cols-1 md:grid-cols-12 gap-10">
+    <div class="md:col-span-6">
+      <p class="eyebrow">Paris Mendones</p>
+      <p class="mt-4 font-display text-3xl md:text-5xl leading-[1.05] max-w-[18ch]">
+        Let's talk about beauty <span class="text-blush-deep">as a business.</span>
+      </p>
+    </div>
+
+    <div class="md:col-span-3">
+      <p class="eyebrow">Reach out</p>
+      <ul class="mt-4 space-y-2 text-ink-soft">
+        <li><a href="mailto:parismendones@gmail.com" class="hover:text-ink underline-offset-4 hover:underline">parismendones@gmail.com</a></li>
+        <li><a href="https://www.linkedin.com/in/paris-mendones-507580329" class="hover:text-ink underline-offset-4 hover:underline" rel="me noopener" target="_blank">LinkedIn</a></li>
+        <li><a href="/resume.pdf" class="hover:text-ink underline-offset-4 hover:underline" target="_blank" rel="noopener">Resume (PDF)</a></li>
+      </ul>
+    </div>
+
+    <div class="md:col-span-3">
+      <p class="eyebrow">Browse</p>
+      <ul class="mt-4 space-y-2 text-ink-soft">
+        <li><a href="/projects" class="hover:text-ink underline-offset-4 hover:underline">Projects</a></li>
+        <li><a href="/about" class="hover:text-ink underline-offset-4 hover:underline">About</a></li>
+        <li><a href="/contact" class="hover:text-ink underline-offset-4 hover:underline">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container-wide pb-10 flex flex-col md:flex-row gap-3 md:items-end md:justify-between text-xs text-ink-mute">
+    <p>© {year} Paris Mendones. All rights reserved.</p>
+    <p>SCAD · Business of Beauty &amp; Fragrance</p>
+  </div>
+</footer>

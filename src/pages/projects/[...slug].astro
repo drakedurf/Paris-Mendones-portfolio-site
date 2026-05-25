@@ -1,0 +1,173 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ImagePlaceholder from '../../components/ImagePlaceholder.astro';
+import ProjectStage from '../../components/ProjectStage.astro';
+import Reveal from '../../components/Reveal.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content, headings } = await render(project);
+const data = project.data;
+
+const heroImage = data.hero
+  ? { label: data.hero.label, src: data.hero.src }
+  : null;
+const stageImages = [
+  ...(heroImage ? [heroImage] : []),
+  ...((data.inlineImages ?? []).map((img) => ({ label: img.label, src: img.src }))),
+];
+
+const allProjects = await getCollection('projects');
+const sorted = allProjects.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+const idx = sorted.findIndex((p) => p.id === project.id);
+const next = sorted[(idx + 1) % sorted.length];
+---
+
+<Base title={data.title} description={data.summary}>
+  <article>
+    <header class="container-wide pt-10 md:pt-16 pb-10 md:pb-14">
+      <Reveal>
+        <a href="/projects" class="text-sm text-ink-mute hover:text-ink inline-flex items-center gap-2">
+          <span aria-hidden="true">←</span> All projects
+        </a>
+      </Reveal>
+
+      <div class="mt-10 md:mt-16 grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-6 items-end">
+        <Reveal class="md:col-span-8">
+          <p class="eyebrow">{data.class}{data.year ? ` · ${data.year}` : ''}</p>
+          <h1 class="font-display mt-5 tracking-tight" style="font-size: var(--text-h1); line-height: var(--text-h1-line-height);">
+            {data.title}
+          </h1>
+          {data.collaborators?.length > 0 && (
+            <p class="mt-5 text-ink-soft">
+              In collaboration with {data.collaborators.join(', ')}.
+            </p>
+          )}
+        </Reveal>
+        <Reveal class="md:col-span-4" delay={80}>
+          <p class="text-ink-soft leading-relaxed">{data.summary}</p>
+          {data.disciplines?.length > 0 && (
+            <ul class="mt-5 flex flex-wrap gap-2">
+              {data.disciplines.map((d) => (
+                <li class="text-xs px-3 py-1.5 rounded-full border border-rule text-ink-soft">{d}</li>
+              ))}
+            </ul>
+          )}
+        </Reveal>
+      </div>
+    </header>
+
+    {/* Mobile: image stack first */}
+    {stageImages.length > 0 && (
+      <section class="container-wide lg:hidden">
+        <div class="space-y-6">
+          {stageImages.map((img, i) => (
+            <Reveal delay={i * 40}>
+              <ImagePlaceholder
+                label={img.label}
+                aspectRatio="4/5"
+                src={img.src}
+                tone="warm"
+                rounded
+                priority={i === 0}
+              />
+            </Reveal>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {/* The editorial split — desktop only stage on left, body on right.
+        On mobile, the stage hides and we just show the body in a single column. */}
+    <section class="container-wide mt-12 lg:mt-20">
+      <div class="lg:grid lg:grid-cols-12 lg:gap-x-12 xl:gap-x-16">
+        {stageImages.length > 0 && (
+          <div class="hidden lg:block lg:col-span-6">
+            <ProjectStage images={stageImages} />
+          </div>
+        )}
+
+        <div class={stageImages.length > 0 ? 'lg:col-span-6' : 'lg:col-span-12 lg:max-w-3xl lg:mx-auto'}>
+          <Reveal>
+            <div
+              data-project-body
+              class="prose prose-lg max-w-none
+                prose-headings:font-display prose-headings:tracking-tight prose-headings:text-ink
+                prose-h2:text-3xl md:prose-h2:text-4xl prose-h2:mt-16 prose-h2:mb-6 prose-h2:leading-[1.05]
+                prose-h2:first:mt-0
+                prose-h3:text-xl prose-h3:mt-10 prose-h3:mb-3
+                prose-p:text-ink-soft prose-p:leading-[1.75] prose-p:text-[1.0625rem]
+                prose-strong:text-ink prose-strong:font-semibold
+                prose-a:text-ink prose-a:underline prose-a:underline-offset-4 prose-a:decoration-blush-deep hover:prose-a:decoration-2
+                prose-blockquote:border-l-2 prose-blockquote:border-blush-deep prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-ink-soft prose-blockquote:font-normal
+                prose-li:text-ink-soft
+                prose-img:rounded-2xl
+              "
+            >
+              <Content />
+            </div>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+
+    {data.gallery?.length > 0 && (
+      <section class="container-wide mt-24 md:mt-36">
+        <Reveal>
+          <div class="flex items-end justify-between border-b border-rule/60 pb-6 mb-10">
+            <div>
+              <p class="eyebrow">Gallery</p>
+              <h2 class="font-display mt-3 tracking-tight" style="font-size: var(--text-h2); line-height: var(--text-h2-line-height);">
+                Selected pages
+              </h2>
+            </div>
+          </div>
+        </Reveal>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          {data.gallery.map((img, i) => (
+            <Reveal delay={i * 60}>
+              <ImagePlaceholder label={img.label} aspectRatio={img.aspectRatio} src={img.src} tone="warm" rounded />
+            </Reveal>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {next && next.id !== project.id && (
+      <section class="container-wide mt-32 md:mt-44">
+        <Reveal>
+          <a href={`/projects/${next.id}`} class="group block border-t border-rule/60 pt-10">
+            <p class="eyebrow">Next project</p>
+            <div class="mt-4 flex items-center justify-between gap-4 md:gap-6">
+              <div class="flex items-center gap-4 md:gap-6 min-w-0">
+                <div class="shrink-0 overflow-hidden rounded-xl w-16 h-20 md:w-24 md:h-28">
+                  <ImagePlaceholder
+                    label={next.data.hero?.label ?? `${next.data.title} — hero image`}
+                    aspectRatio="4/5"
+                    src={next.data.hero?.src}
+                    tone="warm"
+                    class="h-full w-full transition-transform duration-700 group-hover:scale-[1.04]"
+                  />
+                </div>
+                <h3 class="font-display tracking-tight min-w-0" style="font-size: var(--text-h2); line-height: var(--text-h2-line-height);">
+                  {next.data.title}
+                </h3>
+              </div>
+              <span aria-hidden="true" class="text-blush-deep text-2xl transition-transform group-hover:translate-x-1 shrink-0">→</span>
+            </div>
+            <p class="mt-3 text-ink-soft max-w-[60ch]">{next.data.summary}</p>
+          </a>
+        </Reveal>
+      </section>
+    )}
+  </article>
+</Base>

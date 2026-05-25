@@ -1,0 +1,40 @@
+---
+interface Props {
+  delay?: number;
+  y?: number;
+  as?: string;
+  class?: string;
+}
+
+const { delay = 0, y = 16, as: Tag = 'div', class: className = '' } = Astro.props;
+---
+
+<Tag
+  class={`reveal ${className}`}
+  data-reveal
+  data-reveal-delay={delay}
+  data-reveal-y={y}
+  style={`--reveal-y:${y}px;`}
+>
+  <slot />
+</Tag>
+
+<style is:global>
+  [data-reveal] {
+    opacity: 0;
+    transform: translate3d(0, var(--reveal-y, 16px), 0);
+    transition: opacity 0.9s cubic-bezier(0.2, 0.65, 0.2, 1), transform 0.9s cubic-bezier(0.2, 0.65, 0.2, 1);
+    will-change: opacity, transform;
+  }
+  [data-reveal].is-visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal] {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>

@@ -1,0 +1,65 @@
+---
+interface Props {
+  label: string;
+  aspectRatio?: string;
+  src?: string;
+  alt?: string;
+  tone?: 'cream' | 'warm' | 'deep' | 'ink';
+  class?: string;
+  rounded?: boolean;
+  priority?: boolean;
+}
+
+const {
+  label,
+  aspectRatio = '16/9',
+  src,
+  alt,
+  tone = 'warm',
+  class: className = '',
+  rounded = false,
+  priority = false,
+} = Astro.props;
+
+const toneStyles: Record<string, string> = {
+  cream: 'bg-parchment-deep text-ink-mute',
+  warm: 'bg-parchment-warm text-ink-mute',
+  deep: 'bg-taupe/40 text-ink-soft',
+  ink: 'bg-ink text-parchment',
+};
+
+const ratioStyle = `aspect-ratio: ${aspectRatio};`;
+const radius = rounded ? 'rounded-2xl' : '';
+const altText = alt ?? label;
+---
+
+{src ? (
+  <figure class={`relative overflow-hidden ${radius} ${className}`} style={ratioStyle}>
+    <img
+      src={src}
+      alt={altText}
+      loading={priority ? 'eager' : 'lazy'}
+      decoding="async"
+      class="absolute inset-0 h-full w-full object-cover"
+    />
+  </figure>
+) : (
+  <div
+    class={`relative overflow-hidden ${radius} ${toneStyles[tone]} ${className}`}
+    style={ratioStyle}
+    role="img"
+    aria-label={`Image placeholder: ${label}`}
+  >
+    <div class="absolute inset-0 opacity-[0.06]" aria-hidden="true" style="background-image: radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0); background-size: 22px 22px;"></div>
+    <div class="absolute inset-0 flex flex-col justify-between p-5 md:p-7">
+      <div class="flex items-center gap-2">
+        <span class="inline-block h-1.5 w-1.5 rounded-full bg-blush-deep"></span>
+        <span class="eyebrow">Image placeholder</span>
+      </div>
+      <div class="max-w-[42ch]">
+        <p class="font-display text-lg md:text-xl leading-snug">{label}</p>
+        <p class="mt-2 text-xs md:text-sm opacity-70">Aspect {aspectRatio.replace('/', ':')}</p>
+      </div>
+    </div>
+  </div>
+)}

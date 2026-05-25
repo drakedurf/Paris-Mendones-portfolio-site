@@ -1,0 +1,314 @@
+---
+import ImagePlaceholder from './ImagePlaceholder.astro';
+
+interface Slide {
+  href: string;
+  title: string;
+  classLabel: string;
+  year?: string;
+  summary: string;
+  disciplines?: string[];
+  hero?: { label: string; aspectRatio?: string; src?: string };
+}
+
+interface Props {
+  slides: Slide[];
+  intervalMs?: number;
+}
+
+const { slides, intervalMs = 5000 } = Astro.props;
+---
+
+<section
+  class="featured-carousel"
+  data-featured-carousel
+  data-interval={intervalMs}
+  aria-roledescription="carousel"
+  aria-label="Featured projects"
+>
+  <div class="stage" role="group" aria-live="polite">
+    {slides.map((slide, i) => {
+      const num = String(i + 1).padStart(2, '0');
+      const heroLabel = slide.hero?.label ?? `${slide.title} — hero image`;
+      const heroRatio = slide.hero?.aspectRatio ?? '4/3';
+      return (
+        <a
+          href={slide.href}
+          class={`slide group ${i === 0 ? 'is-active' : ''}`}
+          data-slide-index={i}
+          aria-label={`${slide.title} — view project`}
+          aria-hidden={i === 0 ? 'false' : 'true'}
+          tabindex={i === 0 ? 0 : -1}
+        >
+          <div class="slide-media">
+            <ImagePlaceholder
+              label={heroLabel}
+              aspectRatio={heroRatio}
+              src={slide.hero?.src}
+              tone="warm"
+              rounded
+              priority={i === 0}
+            />
+          </div>
+
+          <div class="slide-meta">
+            <div class="flex items-baseline gap-3">
+              <span class="font-display text-xs text-blush-deep tabular-nums shrink-0">{num}</span>
+              <span class="eyebrow !text-[10px] shrink-0">{slide.classLabel}{slide.year ? ` · ${slide.year}` : ''}</span>
+            </div>
+            <h3 class="font-display mt-3 text-3xl md:text-5xl leading-[1.05] tracking-tight">
+              {slide.title}
+            </h3>
+            <p class="mt-4 text-ink-soft leading-relaxed max-w-[60ch]">{slide.summary}</p>
+            <span class="view-project-pill mt-6 inline-flex items-center gap-2 bg-ink text-parchment px-5 py-3 rounded-full text-sm tracking-wide transition-colors group-hover:bg-blush group-hover:text-ink">
+              View project
+              <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
+            </span>
+          </div>
+        </a>
+      );
+    })}
+  </div>
+
+  <div class="controls" aria-label="Featured project navigation">
+    <button type="button" class="control-prev" data-carousel-prev aria-label="Previous featured project">
+      <span aria-hidden="true">←</span>
+    </button>
+    <ol class="dots" role="tablist">
+      {slides.map((slide, i) => (
+        <li>
+          <button
+            type="button"
+            class={`dot ${i === 0 ? 'is-active' : ''}`}
+            data-dot-index={i}
+            role="tab"
+            aria-selected={i === 0 ? 'true' : 'false'}
+            aria-label={`Show ${slide.title}`}
+          ></button>
+        </li>
+      ))}
+    </ol>
+    <button type="button" class="control-next" data-carousel-next aria-label="Next featured project">
+      <span aria-hidden="true">→</span>
+    </button>
+  </div>
+</section>
+
+<style>
+  .featured-carousel {
+    position: relative;
+  }
+
+  .stage {
+    position: relative;
+    width: 100%;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: block;
+    opacity: 0;
+    transform: scale(0.98);
+    transition: opacity 0.9s cubic-bezier(0.2, 0.65, 0.2, 1),
+                transform 1.2s cubic-bezier(0.2, 0.65, 0.2, 1);
+    pointer-events: none;
+    will-change: opacity, transform;
+  }
+  .slide:focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 6px;
+    border-radius: 1rem;
+  }
+  .slide:first-child {
+    position: relative;
+  }
+  .slide.is-active {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+  }
+
+  .slide-media {
+    overflow: hidden;
+    border-radius: 1rem;
+  }
+  .slide-media :global(figure),
+  .slide-media :global(img) {
+    transition: transform 6s cubic-bezier(0.2, 0.65, 0.2, 1);
+  }
+  .slide.is-active .slide-media :global(img) {
+    transform: scale(1.03);
+  }
+
+  .slide-meta {
+    margin-top: 1.5rem;
+  }
+  @media (min-width: 768px) {
+    .slide-meta {
+      margin-top: 2rem;
+    }
+  }
+
+  .slide:hover .slide-meta h3 span {
+    transform: translateX(0.3rem);
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+  }
+
+  .control-prev,
+  .control-next {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 9999px;
+    border: 1px solid var(--color-rule);
+    color: var(--color-ink-soft);
+    background: transparent;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .control-prev:hover,
+  .control-next:hover {
+    color: var(--color-ink);
+    border-color: var(--color-ink);
+  }
+
+  .dots {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    border: 0;
+    background: rgba(0, 0, 0, 0.18);
+    padding: 0;
+    cursor: pointer;
+    transition: background-color 0.3s, width 0.3s;
+  }
+  .dot:hover {
+    background: rgba(0, 0, 0, 0.45);
+  }
+  .dot.is-active {
+    background: var(--color-ink);
+    width: 1.5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slide {
+      transition: opacity 0.2s linear;
+      transform: none;
+    }
+    .slide.is-active {
+      transform: none;
+    }
+    .slide-media :global(img) {
+      transition: none;
+    }
+    .slide.is-active .slide-media :global(img) {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  const carousels = document.querySelectorAll<HTMLElement>('[data-featured-carousel]');
+
+  carousels.forEach((root) => {
+    const slides = Array.from(root.querySelectorAll<HTMLElement>('.slide'));
+    const dots = Array.from(root.querySelectorAll<HTMLElement>('.dot'));
+    const prevBtn = root.querySelector<HTMLButtonElement>('[data-carousel-prev]');
+    const nextBtn = root.querySelector<HTMLButtonElement>('[data-carousel-next]');
+    const intervalMs = Number(root.dataset.interval ?? 5000);
+    const total = slides.length;
+    if (total <= 1) return;
+
+    let current = 0;
+    let timer: ReturnType<typeof setInterval> | null = null;
+    let paused = false;
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const setActive = (idx: number) => {
+      current = (idx + total) % total;
+      slides.forEach((slide, i) => {
+        const isActive = i === current;
+        slide.classList.toggle('is-active', isActive);
+        slide.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+        slide.tabIndex = isActive ? 0 : -1;
+      });
+      dots.forEach((dot, i) => {
+        const isActive = i === current;
+        dot.classList.toggle('is-active', isActive);
+        dot.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+    };
+
+    const next = () => setActive(current + 1);
+    const prev = () => setActive(current - 1);
+
+    const start = () => {
+      if (reduced) return;
+      stop();
+      timer = setInterval(() => {
+        if (!paused) next();
+      }, intervalMs);
+    };
+    const stop = () => {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    };
+
+    nextBtn?.addEventListener('click', () => {
+      next();
+      start();
+    });
+    prevBtn?.addEventListener('click', () => {
+      prev();
+      start();
+    });
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => {
+        setActive(i);
+        start();
+      });
+    });
+
+    root.addEventListener('mouseenter', () => {
+      paused = true;
+    });
+    root.addEventListener('mouseleave', () => {
+      paused = false;
+    });
+    root.addEventListener('focusin', () => {
+      paused = true;
+    });
+    root.addEventListener('focusout', () => {
+      paused = false;
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stop();
+      else start();
+    });
+
+    start();
+  });
+</script>
